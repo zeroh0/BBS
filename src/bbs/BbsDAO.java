@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Date;
+import java.util.ArrayList;
 
 public class BbsDAO {
 	private Connection conn;
@@ -41,7 +42,8 @@ public class BbsDAO {
 
     // 다음 게시글 번호: 마지막에 작성된 게시글 번호 + 1 
     public int getNext() {
-        String sql = "select bbsID from BBS order by bbsID";
+//        String sql = "select bbsID from BBS order by bbsID";
+        String sql = "select max(BBSID) from BBS";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
@@ -72,5 +74,45 @@ public class BbsDAO {
             e.printStackTrace();
         }
         return -1; // 데이터베이스 오류
+    }
+
+    //
+    public ArrayList<Bbs> getList(int pageNumber) {
+        String sql = "select * from (select * from BBS where bbsId < ? and bbsAvailable = 1 order by bbsId desc) where ROWNUM <= 10";
+        ArrayList<Bbs> list = new ArrayList<Bbs>();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, getNext() - (pageNumber - 1) * 10);
+            rs = pstmt.executeQuery();
+            while(rs.next()) {
+                Bbs bbs = new Bbs();
+                bbs.setBbsID(rs.getInt(1));
+                bbs.setBbsTitle(rs.getString(2));
+                bbs.setUserID(rs.getString(3));
+                bbs.setBbsDate(rs.getString(4));
+                bbs.setBbsContent(rs.getString(5));
+                bbs.setBbsAvailable(rs.getInt(6));
+                list.add(bbs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // 게시글 갯수가 10단위일때 다음페이지 버튼이 없게
+    public boolean nextPage(int pageNumber) {
+        String sql = "select * from (select * from BBS where bbsId < ? and bbsAvailable = 1 order by bbsId desc) where ROWNUM <= 10";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, getNext() - (pageNumber - 1) * 10);
+            rs = pstmt.executeQuery();
+            if(rs.next()) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
