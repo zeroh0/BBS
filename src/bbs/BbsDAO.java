@@ -42,8 +42,8 @@ public class BbsDAO {
 
     // 다음 게시글 번호: 마지막에 작성된 게시글 번호 + 1 
     public int getNext() {
-//        String sql = "select bbsID from BBS order by bbsID";
-        String sql = "select max(BBSID) from BBS";
+//        String sql = "select max(bbsID) from BBS";
+        String sql = "select bbsID from BBS order by bbsID desc";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
@@ -100,7 +100,7 @@ public class BbsDAO {
         return list;
     }
 
-    // 게시글 갯수가 10단위일때 다음페이지 버튼이 없게
+    //
     public boolean nextPage(int pageNumber) {
         String sql = "select * from (select * from BBS where bbsId < ? and bbsAvailable = 1 order by bbsId desc) where ROWNUM <= 10";
         try {
@@ -114,5 +114,28 @@ public class BbsDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    //
+    public Bbs getBbs(int bbsID) {
+        String sql = "select * from BBS where bbsID = ?";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, bbsID);
+            rs = pstmt.executeQuery();
+            if(rs.next()) {
+                Bbs bbs = new Bbs();
+                bbs.setBbsID(rs.getInt(1));
+                bbs.setBbsTitle(rs.getString(2));
+                bbs.setUserID(rs.getString(3));
+                bbs.setBbsDate(rs.getString(4));
+                bbs.setBbsContent(rs.getString(5));
+                bbs.setBbsAvailable(rs.getInt(6));
+                return bbs;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null; // 해당 글이 존재하지 않을 때
     }
 }
