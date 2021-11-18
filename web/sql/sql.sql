@@ -28,3 +28,5 @@ commit;
 
 
 select * from (select * from BBS where bbsId < 13 and bbsAvailable = 1 order by bbsId desc) where ROWNUM <= 10;
+
+select * from (select * from BBS where bbsId < 2 and bbsAvailable = 1 order by bbsId desc) where ROWNUM <= 10
