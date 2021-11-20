@@ -9,6 +9,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width", initial-sclae="1">
 <link rel="stylesheet" href="css/bootstrap.css">
+<link rel="stylesheet" href="css/custom.css">
 <title>JSP 게시판 웹사이트</title>
 </head>
 <body>
@@ -113,11 +114,10 @@
 				if(userID != null && userID.equals(bbs.getUserID())) {
 			%>
 				<a href="update.jsp?bbsID=<%=bbsID%>" class="btn btn-primary">수정</a>
-				<a href="deleteAction.jsp?bbsID=<%=bbsID%>" class="btn btn-primary">삭제</a>
+				<a href="deleteAction.jsp?bbsID=<%=bbsID%>" class="btn btn-primary" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</a>
 			<%
 				}
 			%>
-			<input type="submit" class="btn btn-primary pull-right" value="글쓰기">
 		</div>
 	</div>
 

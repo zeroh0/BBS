@@ -28,3 +28,14 @@ commit;
 
 
 select * from (select * from BBS where bbsId < 13 and bbsAvailable = 1 order by bbsId desc) where ROWNUM <= 10;
+
+select * from (select * from BBS where bbsId < 2 and bbsAvailable = 1 order by bbsId desc) where ROWNUM <= 10;
+
+select to_char(sysdate, 'yyyy-mm-dd hh24:mi:ss') from dual;
+
+select TO_DATE(sysdate,'yyyy-mm-dd hh24:mi:ss') from dual;
+
+
+select TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') from dual;
+
+SELECT TO_DATE('20201108132408') FROM DUAL;
